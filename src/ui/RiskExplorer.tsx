@@ -16,12 +16,18 @@ export type ExplorerView = 'house' | 'list';
 export function RiskExplorer({
   report,
   initialView = 'house',
+  initialFindingPath,
+  initialRoomPath,
+  initialExorcisePath,
 }: {
   report: RiskReport;
   initialView?: ExplorerView;
+  initialFindingPath?: string;
+  initialRoomPath?: string;
+  initialExorcisePath?: string;
 }) {
   const [view, setView] = useState<ExplorerView>(initialView);
-  const [exorcisePath, setExorcisePath] = useState<string | null>(null);
+  const [exorcisePath, setExorcisePath] = useState<string | null>(initialExorcisePath ?? null);
   const closeExorcism = useCallback(() => setExorcisePath(null), []);
   return (
     <section className="risk-explorer" aria-label="Risk report explorer">
@@ -30,7 +36,7 @@ export function RiskExplorer({
         <button type="button" aria-pressed={view === 'list'} onClick={() => setView('list')}>List view</button>
       </div>
       <div className="risk-explorer__content">
-        {view === 'house' ? <HouseView report={report} onExorcise={setExorcisePath} /> : <FindingsList report={report} onExorcise={setExorcisePath} />}
+        {view === 'house' ? <HouseView report={report} onExorcise={setExorcisePath} initialFindingPath={initialFindingPath} initialRoomPath={initialRoomPath} /> : <FindingsList report={report} onExorcise={setExorcisePath} />}
       </div>
       {exorcisePath && report.files[exorcisePath] && <ExorcismDialog report={report} file={report.files[exorcisePath]} onClose={closeExorcism} />}
     </section>

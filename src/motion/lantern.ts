@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { houseConfig } from '../config';
 import { motionTokens } from './tokens';
 import { useReducedMotion } from './reducedMotion';
@@ -8,6 +8,7 @@ import { useReducedMotion } from './reducedMotion';
 export function useCursorLantern(enabled = true) {
   const ref = useRef<SVGCircleElement>(null);
   const reduced = useReducedMotion();
+  const [active, setActive] = useState(false);
 
   useEffect(() => {
     const element = ref.current;
@@ -21,6 +22,8 @@ export function useCursorLantern(enabled = true) {
     const smooth = 1 - Math.exp(-houseConfig.animationFrameMs / houseConfig.lanternSmoothingMs);
     const track = (x: number, y: number) => {
       const bounds = frame.getBoundingClientRect();
+      if (x < bounds.left || x > bounds.right || y < bounds.top || y > bounds.bottom) { setActive(false); return; }
+      setActive(true);
       const svg = element.ownerSVGElement;
       const viewBox = svg?.viewBox.baseVal;
       targetX = (x - bounds.left) * ((viewBox?.width ?? bounds.width) / bounds.width);
@@ -45,5 +48,5 @@ export function useCursorLantern(enabled = true) {
     };
   }, [enabled, reduced]);
 
-  return { ref, active: enabled && !reduced };
+  return { ref, active: enabled && !reduced && active };
 }

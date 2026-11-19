@@ -32,12 +32,6 @@ export function createRoomDoorTimeline(door: Element, camera: Element, open: boo
   }, 0);
   return {
     timeline,
-    reducedForm: () => {
-      const reduced = gsap.timeline({ paused: true });
-      reduced.set(door, { rotateY: open ? houseConfig.roomDoorRotation : 0 }, 0);
-      reduced.set(camera, { scale: open ? houseConfig.roomCameraScale : 1 }, 0);
-      reduced.to([door, camera], { opacity: 1, duration: motionTokens.duration.fast / 1000 });
-      return reduced;
-    },
+    reducedForm: () => gsap.timeline({ paused: true }).to([door, camera], { opacity: 1, duration: motionTokens.duration.fast / 1000 }),
   };
 }

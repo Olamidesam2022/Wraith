@@ -24,11 +24,16 @@
 .exorcism-dialog fieldset { display: flex; flex-wrap: wrap; gap: 18px; border: 1px solid var(--line); margin: 16px 0; }
 .ritual { display: flex; align-items: center; gap: 10px; color: var(--ash-500); }
 .ritual svg { width: 58px; height: 58px; overflow: visible; }
-.ritual circle { fill: none; stroke: var(--oxblood-600); stroke-width: 2; animation: ritual-draw 700ms ease-out both; transform-origin: center; }
-.ritual text { fill: var(--bone-100); }
+.ritual { position: relative; }
+.ritual svg { position: relative; z-index: 1; }
+.ritual canvas { position: absolute; left: -61px; top: -61px; width: 180px; height: 180px; pointer-events: none; }
+.ritual circle { fill: none; stroke: var(--oxblood-600); stroke-width: 2; animation: ritual-draw var(--dur-ritual) var(--ease-out) both; transform-origin: center; }
+.ritual text { fill: var(--bone-100); animation: ghost-dissolve var(--dur-dissolve) var(--ease-out) both; transform-origin: center; }
 @keyframes ritual-draw { from { transform: scale(.5); opacity: .2; } to { transform: scale(1); opacity: 1; } }
+.ritual text { transform-box: fill-box; }
+@keyframes ghost-dissolve { from { transform: scale(1); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
 .exorcism-spec { max-height: 44vh; overflow: auto; white-space: pre-wrap; color: var(--bone-100); background: var(--soot-950); padding: 16px; border-radius: 6px; }
-@media (prefers-reduced-motion: reduce) { .ritual circle { animation-duration: 150ms; } }
+@media (prefers-reduced-motion: reduce) { .ritual circle, .ritual text { animation-duration: var(--dur-fast); } .ritual canvas { display: none; } }
 .house-loading { color: var(--bone-100); padding: 40px; }
 
 .primary-action, .example-action, .secondary-action, .view-switch button, .shortcut-help { transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out); }
@@ -127,7 +132,7 @@
 .repo-form__input-row { display: flex; gap: 10px; }
 .repo-form input { width: 100%; min-width: 0; min-height: 48px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--soot-950); color: var(--bone-100); }
 .repo-form input::placeholder { color: var(--ash-500); }
-.primary-action, .secondary-action, .example-action { min-height: 44px; padding: 10px 16px; border: 1px solid var(--oxblood-600); border-radius: 6px; background: var(--oxblood-600); color: var(--bone-100); font-weight: 500; cursor: pointer; transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); }
+.primary-action, .secondary-action, .example-action { min-height: 44px; padding: 10px 16px; border: 1px solid var(--oxblood-600); border-radius: 6px; background: var(--oxblood-600); color: var(--bone-100); font-weight: 500; cursor: pointer; transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out); }
 .primary-action { flex: 0 0 auto; min-height: 48px; }
 .primary-action:active, .secondary-action:active, .example-action:active { transform: scale(0.97); }
 .primary-action:disabled, .secondary-action:disabled, .example-action:disabled { opacity: 0.65; cursor: wait; }
@@ -171,6 +176,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .scan-skeleton span::after { animation: none; }
   .house-dependency.is-active .house-dependency__pulse { animation: none; opacity: 1; }
   .house-selection, .room-detail { animation-duration: var(--dur-fast); }
 }

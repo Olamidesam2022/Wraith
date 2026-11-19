@@ -12,7 +12,7 @@ import { useMotion } from '../motion/useMotion';
 import { createAssemblyTimeline } from '../motion/timelines/assembly';
 import { createRoomDoorTimeline } from '../motion/timelines/interaction';
 
-interface HouseSvgProps { report: RiskReport; onExorcise?: (path: string) => void }
+interface HouseSvgProps { report: RiskReport; onExorcise?: (path: string) => void; initialFindingPath?: string; initialRoomPath?: string }
 
 const kindLabel: Record<RiskKind, string> = {
   ghost: 'Ghost',
@@ -39,10 +39,14 @@ function handleKeyboardAction(event: KeyboardEvent<SVGGElement>, action: () => v
   }
 }
 
-export default function HouseSvg({ report, onExorcise }: HouseSvgProps) {
-  const [selectedFinding, setSelectedFinding] = useState<Finding | null>(null);
+export default function HouseSvg({ report, onExorcise, initialFindingPath, initialRoomPath }: HouseSvgProps) {
+  const [selectedFinding, setSelectedFinding] = useState<Finding | null>(() => report.findings.find((item) => item.path === initialFindingPath) ?? null);
   const [hoveredFinding, setHoveredFinding] = useState<Finding | null>(null);
-  const [selectedRoomIndex, setSelectedRoomIndex] = useState<number | null>(null);
+  const [selectedRoomIndex, setSelectedRoomIndex] = useState<number | null>(() => {
+    const paths = layoutRoomPaths(Object.keys(report.rooms)).rooms;
+    const index = paths.findIndex((room) => room.path === initialRoomPath);
+    return index >= 0 ? index : null;
+  });
   const [interactive, setInteractive] = useState(false);
   const previousRoomIndex = useRef<number | null>(null);
   const layout = useMemo(() => layoutRoomPaths(Object.keys(report.rooms)), [report.rooms]);

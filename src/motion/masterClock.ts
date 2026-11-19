@@ -25,6 +25,9 @@ class MasterMotionClock {
     const activeTimeline = prefersReducedMotion() ? entry.reducedForm() : entry.timeline;
     this.activeTimelines.set(entry, activeTimeline);
     this.master.add(activeTimeline, this.master.time());
+    // Factories return paused timelines for deterministic setup and tests; once
+    // nested, let the master clock own their play state.
+    activeTimeline.paused(false);
     if (!this.hidden) {
       this.master.progress(0);
       this.master.play();

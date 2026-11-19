@@ -1,7 +1,7 @@
 import { housePreviewReport } from '../../fixtures/houseReport';
 import { RiskExplorer, type ExplorerView } from '../../ui/RiskExplorer';
 
-interface PreviewSearchParams { view?: string }
+interface PreviewSearchParams { view?: string; finding?: string; room?: string; exorcise?: string }
 
 export default async function HousePreviewPage({ searchParams }: { searchParams: Promise<PreviewSearchParams> }) {
   const params = await searchParams;
@@ -16,6 +16,9 @@ export default async function HousePreviewPage({ searchParams }: { searchParams:
       <RiskExplorer
         report={housePreviewReport}
         initialView={initialView}
+        initialFindingPath={params.finding}
+        initialRoomPath={params.room}
+        initialExorcisePath={params.exorcise}
       />
     </main>
   );

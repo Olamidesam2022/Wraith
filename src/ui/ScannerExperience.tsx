@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import Lenis from 'lenis';
+import { motionTokens } from '../motion/tokens';
 import { calculateRiskReport } from '../scoring';
 import { housePreviewSnapshot } from '../fixtures/houseReport';
 import type { RepoSnapshot, RiskReport } from '../types';
@@ -31,7 +32,7 @@ export default function ScannerExperience() {
 
   useEffect(() => {
     const reduced = !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const lenis = reduced ? null : new Lenis({ duration: 0.8, smoothWheel: true, autoRaf: true });
+    const lenis = reduced ? null : new Lenis({ duration: motionTokens.duration.slow / 1000, smoothWheel: true, autoRaf: true });
     const keydown = (event: KeyboardEvent) => {
       if (event.key === '?') setShortcutsOpen((open) => !open);
       if (event.key.toLowerCase() === 'w' && event.altKey) setEasterEgg((active) => !active);

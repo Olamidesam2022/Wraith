@@ -6,8 +6,9 @@ import type { MotionTimeline } from '../masterClock';
 export interface AssemblyRoom { selector: string; risk: number }
 
 export function assemblyStaggerDelays(roomCount: number, stagger = houseConfig.assemblyStaggerMs): number[] {
+  const finalStartLimit = Math.max(0, houseConfig.assemblyMaxStaggerMs - motionTokens.duration.slow);
   return Array.from({ length: Math.max(0, Math.floor(roomCount)) }, (_, index) =>
-    Math.min(index * stagger, houseConfig.assemblyMaxStaggerMs));
+    Math.min(index * stagger, finalStartLimit));
 }
 
 export function createAssemblyTimeline(rooms: readonly AssemblyRoom[]): MotionTimeline {
