@@ -52,6 +52,10 @@ try {
       const selector = filename === 'room-open.png' ? '.room-detail' : '.house-selection';
       await cdp('Runtime.evaluate', { expression: `document.querySelector(${JSON.stringify(selector)})?.scrollIntoView({block:'center'})`, returnByValue: true });
       await new Promise((resolve) => setTimeout(resolve, 300));
+      if (filename === 'ghost-hover.png') {
+        const bounds = await cdp('Runtime.evaluate', { expression: `(() => { const r = document.querySelector('.house-marker[aria-label^="Ghost: src/core/index.ts"]')?.getBoundingClientRect(); return r ? {x:r.left+r.width/2,y:r.top+r.height/2} : null })()`, returnByValue: true });
+        if (bounds.result.value) await cdp('Input.dispatchMouseEvent', { type: 'mouseMoved', ...bounds.result.value });
+      }
     }
     if (filename === 'house-assembled.png' || filename === 'stress-preview.png') {
       const perf = await cdp('Runtime.evaluate', { expression: `new Promise(resolve => { const d=[]; let last=0; const start=performance.now(); function tick(t){ if(last) d.push(t-last); last=t; if(t-start<3000) requestAnimationFrame(tick); else {d.sort((a,b)=>a-b);resolve({frames:d.length,p95:d[Math.floor(d.length*.95)]||0})} } requestAnimationFrame(tick) })`, awaitPromise: true, returnByValue: true });
