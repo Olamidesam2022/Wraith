@@ -1,0 +1,50 @@
+:root {
+  color-scheme: dark;
+  --soot-950: #0E0D0B;
+  --soot-900: #161411;
+  --soot-800: #201D19;
+  --line: #34302A;
+  --ash-500: #8A8275;
+  --bone-100: #EDE6D6;
+  --oxblood-600: #7A2A22;
+  --umber-700: #4A2F20;
+  --bronze-500: #6B5A3A;
+  --text-12: 0.75rem;
+  --text-14: 0.875rem;
+  --text-16: 1rem;
+  --text-20: 1.25rem;
+  --text-28: 1.75rem;
+  --text-44: 2.75rem;
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 400ms;
+  --dur-set: 1200ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-door: cubic-bezier(0.7, 0, 0.2, 1);
+  color: var(--bone-100);
+  background: var(--soot-950);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-ui: var(--font-inter), "Segoe UI", sans-serif;
+  --font-mono: var(--font-plex-mono), Consolas, monospace;
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--soot-950);
+  color: var(--bone-100);
+  font-family: var(--font-ui);
+}
+button, input { font: inherit; }
+:focus-visible { outline: 2px solid var(--bone-100); outline-offset: 2px; }
+.app-shell { width: min(100% - 48px, 1200px); margin: 0 auto; padding: 120px 0; }
+.eyebrow { color: var(--ash-500); font-size: var(--text-14); }
+h1 { max-width: 760px; font: 400 var(--text-44)/1.15 var(--font-display); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 150ms !important; }
+}
