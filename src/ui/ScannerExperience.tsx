@@ -4,7 +4,6 @@ import { useCallback, useState, type FormEvent } from 'react';
 import { calculateRiskReport } from '../scoring';
 import { housePreviewSnapshot } from '../fixtures/houseReport';
 import type { RepoSnapshot, RiskReport } from '../types';
-import { FindingsList } from './FindingsList';
 import { RiskExplorer } from './RiskExplorer';
 
 type ScanState = 'empty' | 'loading' | 'error' | 'not-found' | 'rate-limited' | 'token-required' | 'report';
@@ -152,7 +151,7 @@ export default function ScannerExperience() {
             <button className="secondary-action" type="button" onClick={reset}>Scan another repository</button>
           </div>
           <ReportNotices report={report} />
-          <RiskExplorer report={report} listView={<FindingsList report={report} />} />
+          <RiskExplorer report={report} />
         </section>
       )}
 

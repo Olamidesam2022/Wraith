@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react';
 import { houseConfig, scoringConfig } from '../config';
 import type { Finding, RiskKind, RiskReport } from '../types';
 import { RiskIcon } from '../house/RiskIcon';
@@ -20,8 +21,11 @@ export function sortFindings(findings: readonly Finding[], sort: FindingSort): F
   });
 }
 
-export function FindingsList({ report, sort = 'risk-desc' }: { report: RiskReport; sort?: FindingSort }) {
-  const findings = sortFindings(report.findings, sort);
+export function FindingsList({ report, sort: initialSort = 'risk-desc', onExorcise }: { report: RiskReport; sort?: FindingSort; onExorcise?: (path: string) => void }) {
+  const [sort, setSort] = useState<FindingSort>(initialSort);
+  const [kind, setKind] = useState<RiskKind | 'all'>('all');
+  const [room, setRoom] = useState('all');
+  const findings = useMemo(() => sortFindings(report.findings.filter((f) => (kind === 'all' || f.kind === kind) && (room === 'all' || f.room === room)), sort), [report.findings, kind, room, sort]);
   return (
     <section className="findings-list" aria-label="Repository findings">
       <div className="findings-list__toolbar">
@@ -29,16 +33,16 @@ export function FindingsList({ report, sort = 'risk-desc' }: { report: RiskRepor
           <h2>Findings</h2>
           <p>{findings.length} risk signals across {Object.keys(report.rooms).length} rooms.</p>
         </div>
-        <form action="/house-preview" className="findings-list__sort">
-          <input type="hidden" name="view" value="list" />
+        <div className="findings-list__sort">
           <label htmlFor="finding-sort">Sort by</label>
-          <select id="finding-sort" name="sort" defaultValue={sort}>
+          <select id="finding-sort" value={sort} onChange={(e) => setSort(e.target.value as FindingSort)}>
             <option value="risk-desc">Highest risk</option>
             <option value="risk-asc">Lowest risk</option>
             <option value="path">File path</option>
           </select>
-          <button type="submit">Apply</button>
-        </form>
+          <label htmlFor="finding-kind">Risk</label><select id="finding-kind" value={kind} onChange={(e) => setKind(e.target.value as RiskKind | 'all')}><option value="all">All</option><option value="ghost">Ghost</option><option value="cobweb">Cobweb</option><option value="poltergeist">Poltergeist</option></select>
+          <label htmlFor="finding-room">Room</label><select id="finding-room" value={room} onChange={(e) => setRoom(e.target.value)}><option value="all">All rooms</option>{Object.keys(report.rooms).map((r) => <option key={r}>{r}</option>)}</select>
+        </div>
       </div>
       {findings.length === scoringConfig.zero ? (
         <p className="findings-list__empty">No findings meet the risk thresholds.</p>
@@ -58,7 +62,7 @@ export function FindingsList({ report, sort = 'risk-desc' }: { report: RiskRepor
                   </td>
                   <td><code>{finding.path}</code></td>
                   <td><code>{finding.room}</code></td>
-                  <td><span className="finding-score">{Math.round(finding.score)} / 100</span></td>
+                  <td><span className="finding-score">{Math.round(finding.score)} / 100</span>{finding.kind === 'ghost' && onExorcise && <button className="finding-action" onClick={() => onExorcise(finding.path)} aria-label={`Create exorcism plan for ${finding.path}`}>Exorcise</button>}</td>
                 </tr>
               ))}
             </tbody>

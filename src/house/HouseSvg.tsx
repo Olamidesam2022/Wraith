@@ -12,7 +12,7 @@ import { useMotion } from '../motion/useMotion';
 import { createAssemblyTimeline } from '../motion/timelines/assembly';
 import { createRoomDoorTimeline } from '../motion/timelines/interaction';
 
-interface HouseSvgProps { report: RiskReport }
+interface HouseSvgProps { report: RiskReport; onExorcise?: (path: string) => void }
 
 const kindLabel: Record<RiskKind, string> = {
   ghost: 'Ghost',
@@ -39,7 +39,7 @@ function handleKeyboardAction(event: KeyboardEvent<SVGGElement>, action: () => v
   }
 }
 
-export default function HouseSvg({ report }: HouseSvgProps) {
+export default function HouseSvg({ report, onExorcise }: HouseSvgProps) {
   const [selectedFinding, setSelectedFinding] = useState<Finding | null>(null);
   const [hoveredFinding, setHoveredFinding] = useState<Finding | null>(null);
   const [selectedRoomIndex, setSelectedRoomIndex] = useState<number | null>(null);
@@ -267,6 +267,7 @@ export default function HouseSvg({ report }: HouseSvgProps) {
             {(hoveredFinding ?? selectedFinding)!.kind === 'ghost' && report.files[(hoveredFinding ?? selectedFinding)!.path] && (
               <p>{report.files[(hoveredFinding ?? selectedFinding)!.path].dependents.length} dependent files still import this file.</p>
             )}
+            {(hoveredFinding ?? selectedFinding)!.kind === 'ghost' && onExorcise && <button type="button" onClick={() => onExorcise((hoveredFinding ?? selectedFinding)!.path)}>Create exorcism plan</button>}
           </div>
         </aside>
       )}

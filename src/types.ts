@@ -51,6 +51,9 @@ export type RiskKind = 'ghost' | 'cobweb' | 'poltergeist';
 
 export interface FileRiskScores {
   path: string;
+  lastTouchedAt: string | null;
+  authors: AuthorHistory[];
+  commitCount: number;
   ghostScore: number;
   cobwebScore: number;
   poltergeistScore: number;

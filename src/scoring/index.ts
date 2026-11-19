@@ -57,6 +57,9 @@ export function scoreFile(
 
   return {
     path,
+    lastTouchedAt: history.lastTouchedAt,
+    authors: history.authors.map((author) => ({ ...author })),
+    commitCount: history.commitCount,
     ghostScore,
     cobwebScore,
     poltergeistScore,

@@ -1,13 +1,11 @@
 import { housePreviewReport } from '../../fixtures/houseReport';
-import { FindingsList, type FindingSort } from '../../ui/FindingsList';
 import { RiskExplorer, type ExplorerView } from '../../ui/RiskExplorer';
 
-interface PreviewSearchParams { view?: string; sort?: string }
+interface PreviewSearchParams { view?: string }
 
 export default async function HousePreviewPage({ searchParams }: { searchParams: Promise<PreviewSearchParams> }) {
   const params = await searchParams;
   const initialView: ExplorerView = params.view === 'list' ? 'list' : 'house';
-  const sort: FindingSort = params.sort === 'risk-asc' || params.sort === 'path' ? params.sort : 'risk-desc';
   return (
     <main className="preview-shell">
       <header className="preview-header">
@@ -18,7 +16,6 @@ export default async function HousePreviewPage({ searchParams }: { searchParams:
       <RiskExplorer
         report={housePreviewReport}
         initialView={initialView}
-        listView={<FindingsList report={housePreviewReport} sort={sort} />}
       />
     </main>
   );
