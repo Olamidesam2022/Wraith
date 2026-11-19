@@ -1,4 +1,4 @@
-import { exorcismConfig } from '../config';
+import { exorcismConfig, scoringConfig } from '../config';
 import type { FileRiskScores, RiskReport } from '../types';
 
 export type ExorcismMode = 'document' | 'tests' | 'refactor';
@@ -8,7 +8,8 @@ export const modes: Record<ExorcismMode, { title: string; requirements: string[]
   refactor: { title: 'Refactor safely', requirements: ['Keep exported behavior stable.', 'Make one small change at a time.'], tasks: ['Map imports and callers.', 'Add characterization tests.', 'Refactor, then compare behavior.'] },
 };
 export function buildExorcismSpec(report: RiskReport, file: FileRiskScores, mode: ExorcismMode): string {
-  const inactive = file.authors.filter((a) => !a.lastActivityAt || Date.now() - Date.parse(a.lastActivityAt) > exorcismConfig.maximumDaysForDisplay * 86_400_000).map((a) => a.login);
+  const inactivityWindowMs = scoringConfig.orphanActivityDays * scoringConfig.millisecondsPerDay;
+  const inactive = file.authors.filter((a) => !a.lastActivityAt || Date.now() - Date.parse(a.lastActivityAt) >= inactivityWindowMs).map((a) => a.login);
   const days = file.lastTouchedAt ? Math.max(0, Math.floor((Date.now() - Date.parse(file.lastTouchedAt)) / 86_400_000)) : 'unknown';
   const dependents = file.dependents.length ? file.dependents.map((p) => `- \`${p}\``).join('\n') : '- None recorded';
   const selected = modes[mode];

@@ -16,6 +16,7 @@ describe('exorcism plans and limits', () => {
       for (const section of ['Why this file is risky', 'Dependents', 'Task modes', 'Suggested order of work']) expect(md).toContain(`## ${section}`);
       expect(md).toContain('### Add focused tests');
       expect(md).toContain('### Refactor safely');
+      expect(md).toContain('former-contributor');
     }
   });
 });

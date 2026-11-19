@@ -2,11 +2,11 @@
   {
     "sample": "40-file fixture preview, 3 seconds",
     "frames": 180,
-    "p95": 16.799999999999727
+    "p95": 16.700000000000273
   },
   {
     "sample": "generated 5,000-file stress report, 3 seconds",
     "frames": 180,
-    "p95": 16.700000000000728
+    "p95": 16.800000000000182
   }
 ]
