@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import Lenis from 'lenis';
 import { motionTokens } from '../motion/tokens';
+import { useSound } from '../motion/sound';
 import { calculateRiskReport } from '../scoring';
 import { housePreviewSnapshot } from '../fixtures/houseReport';
 import type { RepoSnapshot, RiskReport } from '../types';
@@ -29,6 +30,7 @@ export default function ScannerExperience() {
   const [usingFixture, setUsingFixture] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [easterEgg, setEasterEgg] = useState(false);
+  const sound = useSound();
 
   useEffect(() => {
     const reduced = !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -49,6 +51,7 @@ export default function ScannerExperience() {
   }, []);
 
   const tryExample = useCallback(async () => {
+    sound.play();
     setState('loading');
     setMessage('Loading a local example. No GitHub request is made.');
     try {
@@ -62,10 +65,11 @@ export default function ScannerExperience() {
     showSnapshot({ ...housePreviewSnapshot, repoName: `Fixture · ${exampleRepository}` }, true);
     setRepoUrl(`https://github.com/${exampleRepository}`);
     setMessage(`Offline fixture loaded for ${exampleRepository}. It is illustrative sample data, not a live scan.`);
-  }, [showSnapshot]);
+  }, [showSnapshot, sound.play]);
 
   const scan = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    sound.play();
     setState('loading');
     setMessage('Reading repository files and history from GitHub.');
     setReport(null);
@@ -89,7 +93,7 @@ export default function ScannerExperience() {
       setState('error');
       setMessage('The scan service could not be reached. Check the connection and try again.');
     }
-  }, [repoUrl, showSnapshot, visitorToken]);
+  }, [repoUrl, showSnapshot, sound.play, visitorToken]);
 
   const reset = () => {
     setReport(null);
@@ -104,6 +108,7 @@ export default function ScannerExperience() {
       <header className="landing-nav">
         <a className="wordmark" href="/" aria-label="Wraith home">Wraith<span aria-hidden="true">/</span></a>
         <a className="nav-link" href="/house-preview">House preview</a>
+        <button className="sound-toggle" type="button" aria-pressed={sound.enabled} onClick={sound.toggle}>Sound {sound.enabled ? 'on' : 'off'}</button>
       </header>
       {!report ? (
         <>
@@ -171,6 +176,7 @@ export default function ScannerExperience() {
               {usingFixture && <p className="fixture-notice">Illustrative fixture data; no live repository scan has been run.</p>}
             </div>
             <button className="secondary-action" type="button" onClick={reset}>Scan another repository</button>
+            <button className="sound-toggle" type="button" aria-pressed={sound.enabled} onClick={sound.toggle}>Sound {sound.enabled ? 'on' : 'off'}</button>
           </div>
           <ReportNotices report={report} />
           <RiskExplorer report={report} />

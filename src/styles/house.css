@@ -38,6 +38,8 @@
 
 .primary-action, .example-action, .secondary-action, .view-switch button, .shortcut-help { transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out); }
 .primary-action:active, .example-action:active, .secondary-action:active, .view-switch button:active { transform: scale(.97); transition-duration: 90ms; }
+.sound-toggle { min-height: 40px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--soot-800); color: var(--bone-100); cursor: pointer; transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out); }
+.sound-toggle:active { transform: scale(.97); transition-duration: 90ms; }
 .landing-story { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 130px 0 60px; padding-top: 28px; border-top: 1px solid var(--line); }
 .landing-story .eyebrow, .landing-story > a { grid-column: 1 / -1; }
 .landing-story div { min-height: 130px; padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--soot-900); }

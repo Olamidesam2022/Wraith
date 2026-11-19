@@ -50,7 +50,7 @@ npm run build
 
 House timelines share `src/motion/tokens.ts` and register with the master motion clock. The clock pauses when the tab is hidden. Reduced motion uses short fades and disables Lenis smooth scrolling. House controls support keyboard panning, zoom, reset, room opening and finding details. The house uses inline SVG and the findings view supports risk, path, and room filters.
 
-The landing includes a Lenis scroll narrative and a `?` shortcut sheet. The optional sound layer, ambient dust and fog, magnetic pull, scrubbed ScrollTrigger story, and cross-device animation profiling are not included yet.
+The landing includes a Lenis scroll narrative, a `?` shortcut sheet, and an optional synthesized sine cue. Sound starts off; the visitor must turn it on, after which scan actions play a 70 ms cue capped at 0.08 gain. Ambient dust and fog, magnetic pull, the scrubbed ScrollTrigger story, and cross-device animation profiling are not included yet.
 
 The local headless Edge sample measured p95 frame intervals of 16.7 ms on both the 40-file house fixture and `/house-preview/stress`, a generated 5,000-file/100-room report. This measures the idle assembled view for three seconds after render; it is not a production-device benchmark. The generated stress report contains no GitHub history or findings.
 

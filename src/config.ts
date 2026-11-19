@@ -101,3 +101,9 @@ export const exorcismConfig = {
   particleFadeFrames: 42,
   maximumDaysForDisplay: 99_999,
 } as const;
+
+export const soundConfig = {
+  maximumGain: 0.08,
+  cueDurationMs: 70,
+  cueFrequencyHz: 520,
+} as const;
