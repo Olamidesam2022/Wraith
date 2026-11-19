@@ -1,0 +1,12 @@
+[
+  {
+    "sample": "40-file fixture preview, 3 seconds",
+    "frames": 180,
+    "p95": 16.700000000000728
+  },
+  {
+    "sample": "generated 5,000-file stress report, 3 seconds",
+    "frames": 180,
+    "p95": 16.700000000000728
+  }
+]
