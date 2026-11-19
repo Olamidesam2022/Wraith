@@ -201,9 +201,9 @@ export default function HouseSvg({ report }: HouseSvgProps) {
                       aria-label={label}
                       aria-pressed={selectedFinding?.path === finding.path && selectedFinding.kind === finding.kind}
                       onClick={() => { if (interactive) setSelectedFinding(finding); }}
-                      onMouseEnter={() => setHoveredFinding(finding)}
+                      onMouseEnter={() => { if (interactive) setHoveredFinding(finding); }}
                       onMouseLeave={() => setHoveredFinding(null)}
-                      onFocus={() => setHoveredFinding(finding)}
+                      onFocus={() => { if (interactive) setHoveredFinding(finding); }}
                       onBlur={() => setHoveredFinding(null)}
                       onKeyDown={(event) => handleKeyboardAction(event, () => setSelectedFinding(finding))}
                     >
@@ -248,8 +248,8 @@ export default function HouseSvg({ report }: HouseSvgProps) {
             <g className="cursor-lantern-overlay" aria-hidden="true" pointerEvents="none">
               <defs>
                 <mask id="cursor-lantern-mask" maskUnits="userSpaceOnUse">
-                  <rect width={layout.width} height={layout.height} fill="white" />
-                  <circle ref={lantern.ref} cx="0" cy="0" r={houseConfig.lanternHoleRadius} fill="black" />
+                  <rect width={layout.width} height={layout.height} fill="var(--bone-100)" />
+                  <circle ref={lantern.ref} cx="0" cy="0" r={houseConfig.lanternHoleRadius} fill="var(--soot-950)" />
                 </mask>
               </defs>
               <rect width={layout.width} height={layout.height} fill="var(--soot-950)" opacity={houseConfig.lanternOverlayOpacity} mask="url(#cursor-lantern-mask)" />

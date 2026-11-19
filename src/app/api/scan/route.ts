@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   if (!token) return NextResponse.json({ error: 'TOKEN_REQUIRED', message: 'Add a GitHub token for a live scan, or load a cached example.' }, { status: 401 });
 
   try {
-    const snapshot = await scanGithubRepository(body.repoUrl, token, undefined, Boolean(visitorToken));
+    const snapshot = await scanGithubRepository(body.repoUrl, token, undefined, Boolean(token));
     return NextResponse.json({ snapshot });
   } catch (error) {
     if (error instanceof GithubScanError) {
