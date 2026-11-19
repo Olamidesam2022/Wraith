@@ -9,6 +9,11 @@ afterEach(() => {
 });
 
 describe('landing and scanner flow', () => {
+  it('ignores malformed keyboard events without a key', () => {
+    render(<ScannerExperience />);
+    expect(() => window.dispatchEvent(new Event('keydown'))).not.toThrow();
+  });
+
   it('loads a bundled offline fixture when no generated example snapshot exists', async () => {
     const fetchMock = vi.fn(async () => new Response(null, { status: 404 }));
     vi.stubGlobal('fetch', fetchMock);
