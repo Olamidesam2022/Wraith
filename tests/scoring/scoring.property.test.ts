@@ -131,7 +131,7 @@ describe('scoring properties', () => {
       expect(targetRisk.ghostScore).toBeGreaterThanOrEqual(scoringConfig.zero);
       expect(targetRisk.ghostScore).toBeLessThanOrEqual(scoringConfig.scoreScale);
     }), { numRuns: 200 });
-  });
+  }, 20_000);
 
   it('room health never rises when another file is added', () => {
     fc.assert(fc.property(

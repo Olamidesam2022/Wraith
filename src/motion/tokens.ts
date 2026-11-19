@@ -6,3 +6,12 @@ export const motionTokens = {
     door: 'cubic-bezier(0.7, 0, 0.2, 1)',
   },
 } as const;
+
+export const motionCssVariables = {
+  duration: {
+    fast: `var(--dur-fast)`,
+    base: `var(--dur-base)`,
+    slow: `var(--dur-slow)`,
+    set: `var(--dur-set)`,
+  },
+} as const;
