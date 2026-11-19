@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import Lenis from 'lenis';
 import { calculateRiskReport } from '../scoring';
 import { housePreviewSnapshot } from '../fixtures/houseReport';
 import type { RepoSnapshot, RiskReport } from '../types';
@@ -25,6 +26,19 @@ export default function ScannerExperience() {
   const [message, setMessage] = useState('');
   const [report, setReport] = useState<RiskReport | null>(null);
   const [usingFixture, setUsingFixture] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [easterEgg, setEasterEgg] = useState(false);
+
+  useEffect(() => {
+    const reduced = !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const lenis = reduced ? null : new Lenis({ duration: 0.8, smoothWheel: true, autoRaf: true });
+    const keydown = (event: KeyboardEvent) => {
+      if (event.key === '?') setShortcutsOpen((open) => !open);
+      if (event.key.toLowerCase() === 'w' && event.altKey) setEasterEgg((active) => !active);
+    };
+    window.addEventListener('keydown', keydown);
+    return () => { lenis?.destroy(); window.removeEventListener('keydown', keydown); };
+  }, []);
 
   const showSnapshot = useCallback((snapshot: RepoSnapshot, fixture: boolean) => {
     setReport(calculateRiskReport(snapshot));
@@ -111,7 +125,7 @@ export default function ScannerExperience() {
                   aria-describedby="repo-help"
                   required
                 />
-                <button className="primary-action" type="submit" disabled={state === 'loading'}>Scan repository</button>
+                <button className="primary-action magnetic-action" type="submit" disabled={state === 'loading'}>Scan repository</button>
               </div>
               <p id="repo-help" className="form-note">Live scans run through Wraith’s route and query GitHub GraphQL.</p>
               <details className="token-disclosure">
@@ -138,6 +152,13 @@ export default function ScannerExperience() {
             <article><span className="proof-index">01</span><h2>Ghosts</h2><p>Load-bearing files with silent authors and active dependents.</p></article>
             <article><span className="proof-index">02</span><h2>Cobwebs</h2><p>Files with a long gap since the last touch.</p></article>
             <article><span className="proof-index">03</span><h2>Poltergeists</h2><p>Areas where fixes and reversions keep returning.</p></article>
+          </section>
+          <section className="landing-story" aria-label="How Wraith works">
+            <p className="eyebrow">From history to a room you can act on</p>
+            <div><span>01 · Scan</span><p>Read file history and dependency edges in bounded batches.</p></div>
+            <div><span>02 · Assemble</span><p>Turn risky paths into rooms and explain each signal with an icon and score.</p></div>
+            <div><span>03 · Repair</span><p>Inspect ownership, dependents, and a practical Markdown task plan.</p></div>
+            <a href="#repo-url">Skip story and scan a repository ↑</a>
           </section>
         </>
       ) : (
@@ -170,6 +191,9 @@ export default function ScannerExperience() {
           )}
         </div>
       )}
+      <button className="shortcut-help" onClick={() => setShortcutsOpen((open) => !open)} aria-label="Keyboard shortcuts">?</button>
+      {shortcutsOpen && <div className="shortcut-sheet" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts"><h2>Keyboard shortcuts</h2><p>House: arrow keys pan, plus/minus zoom, R resets, Enter opens a focused room or ghost.</p><p>Press Escape to close details. Press ? to close this sheet.</p><button onClick={() => setShortcutsOpen(false)}>Close</button></div>}
+      {easterEgg && <p className="easter-egg" role="status">The house remembers every hand that built it.</p>}
     </main>
   );
 }

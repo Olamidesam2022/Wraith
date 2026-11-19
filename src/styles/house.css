@@ -31,6 +31,18 @@
 @media (prefers-reduced-motion: reduce) { .ritual circle { animation-duration: 150ms; } }
 .house-loading { color: var(--bone-100); padding: 40px; }
 
+.primary-action, .example-action, .secondary-action, .view-switch button, .shortcut-help { transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out); }
+.primary-action:active, .example-action:active, .secondary-action:active, .view-switch button:active { transform: scale(.97); transition-duration: 90ms; }
+.landing-story { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 130px 0 60px; padding-top: 28px; border-top: 1px solid var(--line); }
+.landing-story .eyebrow, .landing-story > a { grid-column: 1 / -1; }
+.landing-story div { min-height: 130px; padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--soot-900); }
+.landing-story span { color: var(--bone-100); font: var(--text-14) var(--font-mono); }
+.landing-story p { color: var(--bone-100); line-height: 1.6; }
+.shortcut-help { position: fixed; right: 18px; bottom: 18px; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; background: var(--soot-800); color: var(--bone-100); font: var(--text-20) var(--font-mono); z-index: 15; }
+.shortcut-sheet { position: fixed; right: 20px; bottom: 74px; z-index: 16; width: min(400px, calc(100vw - 40px)); padding: 20px; border: 1px solid var(--bronze-500); border-radius: 10px; background: var(--soot-900); color: var(--bone-100); }
+.easter-egg { position: fixed; left: 50%; bottom: 20px; z-index: 20; transform: translateX(-50%); padding: 12px 18px; border: 1px solid var(--bronze-500); border-radius: 8px; background: var(--soot-900); color: var(--bone-100); }
+@media (max-width: 760px) { .landing-story { grid-template-columns: 1fr; margin-top: 72px; } }
+
 .house-view { color: var(--bone-100); }
 .house-legend { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin: 0 0 18px; color: var(--bone-100); font-size: var(--text-14); line-height: 1.5; }
 .house-legend span { display: inline-flex; gap: 8px; align-items: center; }
