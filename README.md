@@ -13,13 +13,13 @@ Open `http://localhost:3000`. To enable authenticated live scans, add a GitHub t
 
 ## Cached snapshots
 
-The cached demo snapshots still need to be generated once a token is set. Start the Next.js app, then run:
+The bundled fixture keeps the example available before a live snapshot exists. To replace or add a cached example, put a GitHub token in `.env.local`, start the Next.js app, then run:
 
 ```sh
-npm run snapshot -- expressjs/express
+npm run snapshot -- owner/repo
 ```
 
-The command reads `GITHUB_TOKEN` from `.env.local`, calls the local `/api/scan` route, and writes a token-free snapshot under `public/snapshots/`. Run it for two or three public repositories to prepare the offline examples. No live scan is part of setup or build.
+The command reads `GITHUB_TOKEN` from `.env.local`, calls the local `/api/scan` route, and writes a token-free snapshot under `public/snapshots/`. The example button uses a matching generated snapshot automatically and falls back to the bundled fixture when none exists. `.env.local` is ignored by Git. No live scan is part of setup or build.
 
 ## Architecture
 
@@ -48,11 +48,9 @@ npm run build
 
 ## Motion and accessibility
 
-House timelines share `src/motion/tokens.ts` and register with the master motion clock. The clock pauses when the tab is hidden. Reduced motion uses short fades and disables Lenis smooth scrolling. House controls support keyboard panning, zoom, reset, room opening and finding details. The house uses inline SVG and the findings view supports risk, path, and room filters.
+House timelines and the lazy physics layer register with the master motion clock. The clock pauses when the tab is hidden; Calm mode and reduced-motion preferences disable impact motion. The Effects menu controls intensity, physics, ghosts, dust, rain, gravity, earthquake, history replay, room collapse, and a wrecking ball. Physics is capped at 150 bodies and 300 particles, with adaptive quality reduction. Long effects can be skipped with Escape or the visible skip control. House controls support keyboard panning, zoom, reset, room opening, and finding details. Ghosts can be selected, dragged, and thrown; cobweb findings can be torn. The house uses inline SVG and the findings view supports risk, path, and room filters.
 
-The landing includes a Lenis scroll narrative, a `?` shortcut sheet, and an optional synthesized sine cue. Sound starts off; the visitor must turn it on, after which scan actions play a 70 ms cue capped at 0.08 gain. Ambient dust and fog, magnetic pull, the scrubbed ScrollTrigger story, and cross-device animation profiling are not included yet.
-
-The local headless Edge sample measured p95 frame intervals of 16.7 ms on both the 40-file house fixture and `/house-preview/stress`, a generated 5,000-file/100-room report. This measures the idle assembled view for three seconds after render; it is not a production-device benchmark. The generated stress report contains no GitHub history or findings.
+The landing includes a Lenis scroll narrative, a `?` shortcut sheet, and an optional synthesized sine cue. Sound starts off; the visitor must turn it on, after which scan actions play a 70 ms cue capped at 0.08 gain. Ambient dust, simple rain, room and ghost impacts, and bats are included. The full cursor-pulled fog field, spider and lantern simulations, room swapping, a complete debris shatter ritual, cursor ember trail, full scroll-scrub story, and route-wide animated transitions are not implemented. These effects need additional interaction and accessibility work; the current play layer prioritizes bounded physics, readable controls, and reduced-motion behavior.
 
 ## Licences
 
@@ -62,7 +60,7 @@ The local headless Edge sample measured p95 frame intervals of 16.7 ms on both t
 
 ## Vercel deployment
 
-Set `GITHUB_TOKEN` in the Vercel project environment for authenticated scans. The `/api/scan` route uses Node.js and keeps the current scan cap at 400 files, with up to four history paths batched into each GraphQL request; partial history and skipped files are reported. Vercel applies a function duration limit, configurable with `export const maxDuration` in the route. Current plan defaults and maximums vary by plan and Fluid Compute setting, so set this to a value supported by the deployment and profile a representative repository before raising the cap. The limiter is process-local; replace its `RateLimitStore` adapter in `src/scanner/rateLimit.ts` with Vercel KV or Upstash Redis to coordinate across instances. There is no scan proxy outside the Next route.
+Set `GITHUB_TOKEN` in the Vercel project environment for authenticated scans. The `/api/scan` route uses Node.js and sets `maxDuration` to 60 seconds. Scans cap repository tree entries and selected files, batch history queries, and stop issuing GitHub requests after a 55-second request budget; a scan that reaches the deadline returns a generic service error without exposing the token. Vercel plan limits can be lower than 60 seconds, so set `maxDuration` and the request budget in `src/app/api/scan/route.ts` to values supported by the deployment. The limiter is process-local; replace its `RateLimitStore` adapter in `src/scanner/rateLimit.ts` with Vercel KV or Upstash Redis to coordinate across instances. There is no scan proxy outside the Next route.
 
 ## Portfolio case study
 
@@ -81,16 +79,5 @@ The scanner separates pure import and path logic from GitHub GraphQL transport. 
 ### What I learned
 
 Risk explanations need to stay tied to source evidence. Bounded scans, explicit unsupported-language reporting and visible dependents make the visual result easier to trust than a single unexplained health number.
-
-## Screenshots
-
-- [Landing](./landing.png)
-- [Assembled house](./house-assembled.png)
-- [Ghost detail](./ghost-hover.png)
-- [Opened room](./room-open.png)
-- [Exorcism result](./exorcism-result.png)
-- [Findings list](./findings-list.png)
-- [Mobile width](./mobile.png)
-- [Earlier room zoom](./house-room-zoom.png)
 
 # Wraith

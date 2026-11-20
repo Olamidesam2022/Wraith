@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GithubScanError, scanGithubRepository } from '@/scanner/github';
+import { githubGraphql, GithubScanError, scanGithubRepository, type GraphqlTransport } from '@/scanner/github';
 import { allowScan } from '@/scanner/rateLimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
+
+const scanBudgetMs = 55_000;
 
 export async function POST(request: NextRequest) {
   const forwardedFor = request.headers.get('x-forwarded-for');
@@ -20,7 +23,16 @@ export async function POST(request: NextRequest) {
   if (!token) return NextResponse.json({ error: 'TOKEN_REQUIRED', message: 'Add a GitHub token for a live scan, or load a cached example.' }, { status: 401 });
 
   try {
-    const snapshot = await scanGithubRepository(body.repoUrl, token, undefined, Boolean(token));
+    const deadline = Date.now() + scanBudgetMs;
+    const boundedTransport: GraphqlTransport = (query, accessToken) => {
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) throw new GithubScanError('GITHUB_ERROR');
+      return githubGraphql(query, accessToken, (input, init) => fetch(input, {
+        ...init,
+        signal: AbortSignal.timeout(remaining),
+      }));
+    };
+    const snapshot = await scanGithubRepository(body.repoUrl, token, boundedTransport, Boolean(token));
     return NextResponse.json({ snapshot });
   } catch (error) {
     if (error instanceof GithubScanError) {

@@ -36,12 +36,15 @@ export default function ScannerExperience() {
     const reduced = !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const lenis = reduced ? null : new Lenis({ duration: motionTokens.duration.slow / 1000, smoothWheel: true, autoRaf: true });
     const keydown = (event: KeyboardEvent) => {
-      if (typeof event.key !== 'string') return;
-      if (event.key === '?') setShortcutsOpen((open) => !open);
-      if (event.key.toLowerCase() === 'w' && event.altKey) setEasterEgg((active) => !active);
+      const key = typeof event?.key === 'string' ? event.key.toLowerCase() : '';
+      if (key === 'escape') setShortcutsOpen(false);
+      if (event?.key === '?') setShortcutsOpen((open) => !open);
+      if (key === 'w' && event.altKey) setEasterEgg((active) => !active);
     };
+    const pauseScroll = () => { if (document.hidden) lenis?.stop(); else lenis?.start(); };
     window.addEventListener('keydown', keydown);
-    return () => { lenis?.destroy(); window.removeEventListener('keydown', keydown); };
+    document.addEventListener('visibilitychange', pauseScroll);
+    return () => { lenis?.destroy(); window.removeEventListener('keydown', keydown); document.removeEventListener('visibilitychange', pauseScroll); };
   }, []);
 
   const showSnapshot = useCallback((snapshot: RepoSnapshot, fixture: boolean) => {

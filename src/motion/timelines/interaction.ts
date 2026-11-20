@@ -7,7 +7,7 @@ export function createGhostHoverTimeline(ghost: Element, detail: Element, depend
   const timeline = gsap.timeline({ paused: true });
   timeline.to(ghost, { y: -6, duration: motionTokens.duration.fast / 1000, ease: motionTokens.easing.out });
   if (dependencyLines.length) timeline.to(dependencyLines, { opacity: 1, duration: motionTokens.duration.fast / 1000 }, 0);
-  timeline.to(detail, { opacity: 1, y: 0, duration: motionTokens.duration.base / 1000, ease: motionTokens.easing.out }, 0);
+  timeline.to(detail, { opacity: 1, y: 0, scale: 1, duration: motionTokens.duration.base / 1000, ease: motionTokens.easing.back }, 0);
   return {
     timeline,
     reducedForm: () => gsap.timeline({ paused: true }).to([ghost, detail, ...dependencyLines], {
@@ -22,7 +22,7 @@ export function createRoomDoorTimeline(door: Element, camera: Element, open: boo
   timeline.to(door, {
     rotateY: open ? houseConfig.roomDoorRotation : 0,
     duration: (open ? motionTokens.duration.set / 2 : motionTokens.duration.slow + motionTokens.duration.fast) / 1000,
-    ease: motionTokens.easing.door,
+    ease: open ? motionTokens.easing.elastic : motionTokens.easing.bounce,
     transformOrigin: 'left center',
   });
   timeline.to(camera, {

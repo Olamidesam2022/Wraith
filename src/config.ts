@@ -88,8 +88,8 @@ export const houseConfig = {
 } as const;
 
 export const exorcismConfig = {
-  circleDrawMs: 700,
-  dissolveMs: 900,
+  circleDrawMs: 1_200,
+  dissolveMs: 1_200,
   maximumDurationMs: 3_500,
   baseCharacterMs: 12,
   maximumParticles: 120,

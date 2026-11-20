@@ -27,8 +27,8 @@
 .ritual { position: relative; }
 .ritual svg { position: relative; z-index: 1; }
 .ritual canvas { position: absolute; left: -61px; top: -61px; width: 180px; height: 180px; pointer-events: none; }
-.ritual circle { fill: none; stroke: var(--oxblood-600); stroke-width: 2; animation: ritual-draw var(--dur-ritual) var(--ease-out) both; transform-origin: center; }
-.ritual text { fill: var(--bone-100); animation: ghost-dissolve var(--dur-dissolve) var(--ease-out) both; transform-origin: center; }
+.ritual circle { fill: none; stroke: var(--oxblood-600); stroke-width: 2; animation: ritual-draw var(--dur-set) var(--ease-out) both; transform-origin: center; }
+.ritual text { fill: var(--bone-100); animation: ghost-dissolve var(--dur-set) var(--ease-out) both; transform-origin: center; }
 @keyframes ritual-draw { from { transform: scale(.5); opacity: .2; } to { transform: scale(1); opacity: 1; } }
 .ritual text { transform-box: fill-box; }
 @keyframes ghost-dissolve { from { transform: scale(1); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
@@ -36,10 +36,69 @@
 @media (prefers-reduced-motion: reduce) { .ritual circle, .ritual text { animation-duration: var(--dur-fast); } .ritual canvas { display: none; } }
 .house-loading { color: var(--bone-100); padding: 40px; }
 
+/* Optional house play layer: all motion uses shared durations and easing tokens. */
+.house-effects-menu { position: relative; z-index: 4; margin: 0 0 14px auto; width: fit-content; max-width: 100%; color: var(--bone-100); }
+.house-effects-menu summary { display: flex; gap: 12px; align-items: center; min-height: 40px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 7px; background: var(--soot-900); cursor: pointer; }
+.house-effects-menu summary span, .effects-quality { color: var(--bone-100); font: var(--text-12) var(--font-mono); }
+.house-effects-controls { position: absolute; top: calc(100% + 6px); right: 0; display: grid; gap: 12px; width: min(440px, calc(100vw - 36px)); max-height: min(70vh, 580px); overflow: auto; padding: 16px; border: 1px solid var(--bronze-500); border-radius: 8px; background: var(--soot-900); box-shadow: 0 12px 30px var(--soot-950); }
+.house-effects-controls > label { display: flex; justify-content: space-between; gap: 12px; color: var(--bone-100); }
+.house-effects-controls input[type="range"] { width: 100%; accent-color: var(--oxblood-600); }
+.effects-toggles { display: grid; gap: 8px; }
+.effects-toggles label { display: flex; align-items: center; gap: 9px; min-height: 32px; color: var(--bone-100); }
+.effects-toggles input { accent-color: var(--bronze-500); }
+.effects-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.effects-actions button { min-height: 38px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 5px; background: var(--soot-800); color: var(--bone-100); cursor: pointer; }
+.effects-actions button:hover:not(:disabled), .house-effects-menu summary:hover { border-color: var(--bone-100); }
+.effects-actions button:disabled { opacity: .55; cursor: not-allowed; }
+.effects-quality { margin: 0; }
+.house-scroll-frame { isolation: isolate; }
+.house-svg { position: relative; z-index: 1; transform-origin: center; }
+.physics-canvas { position: absolute; z-index: 2; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); pointer-events: none; }
+.house-scene { transition: opacity var(--dur-base) var(--ease-out); }
+.house-view.is-calm .house-scene, .house-scene.is-calm { transition-duration: var(--dur-fast); }
+.house-svg.is-shaking { animation: house-impact var(--dur-set) var(--ease-out) 1; }
+.house-view[data-intensity="2"] .house-svg.is-shaking { animation-name: house-impact-wild; }
+.house-svg.is-replaying .house-room { animation: history-replay var(--dur-set) var(--ease-out) both; }
+.house-svg.is-replaying .house-room:nth-of-type(3n) { animation-delay: var(--dur-fast); }
+.house-room.is-poltergeist:not(.is-broken) .house-room__surface { animation: poltergeist-tap var(--dur-set) var(--ease-in-out) infinite; }
+.house-room.is-broken .house-room__surface { animation: room-collapse var(--dur-slow) var(--ease-out) both; transform-box: fill-box; transform-origin: center bottom; }
+.house-marker.is-playful { animation: ghost-drift var(--dur-set) var(--ease-in-out) infinite alternate; transform-box: fill-box; transform-origin: center; }
+.house-marker.is-playful:nth-of-type(even) { animation-delay: var(--dur-base); }
+.house-marker.is-rattling { animation: ghost-rattle var(--dur-base) var(--ease-in-out) infinite; }
+.house-marker.is-jumping { animation: ghost-jump var(--dur-base) var(--ease-out) 1; }
+.house-marker.is-possessed { animation: ghost-possess var(--dur-set) var(--ease-in-out) infinite; }
+.house-marker.is-torn { opacity: .25; transform: scale(.75); transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out); }
+.house-svg.is-stormy::after { content: ""; }
+.house-svg.has-fog .house-outline { opacity: .5; transition: opacity var(--dur-set) var(--ease-in-out); }
+.house-bat { fill: var(--bone-100); opacity: 0; transform-box: fill-box; transform-origin: center; pointer-events: none; }
+.house-bat--one { animation: bat-cross var(--dur-set) var(--ease-in-out) 1 var(--dur-slow) forwards; }
+.house-bat--two { animation: bat-cross var(--dur-set) var(--ease-in-out) 1 var(--dur-set) forwards; }
+.house-bat--three { animation: bat-cross var(--dur-set) var(--ease-in-out) 1 var(--dur-set) forwards; }
+.is-possessed-label { color: var(--bone-100); animation: possessed-label var(--dur-set) var(--ease-in-out) infinite alternate; }
+.motion-paused *, .motion-paused *::before, .motion-paused *::after { animation-play-state: paused !important; }
+@keyframes house-impact { 0%, 100% { transform: translate3d(0,0,0); } 20% { transform: translate3d(-4px,2px,0) scale(1.01,.99); } 42% { transform: translate3d(4px,-2px,0) scale(.99,1.01); } 64% { transform: translate3d(-2px,1px,0); } }
+@keyframes house-impact-wild { 0%, 100% { transform: translate3d(0,0,0); } 20% { transform: translate3d(calc(var(--shake-big) * -1),4px,0) scale(1.03,.97); } 42% { transform: translate3d(var(--shake-big),-4px,0) scale(.97,1.03); } 64% { transform: translate3d(calc(var(--shake-small) * -1),2px,0); } }
+@keyframes history-replay { from { opacity: .25; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes poltergeist-tap { 0%, 84%, 100% { transform: translate(0,0); } 88% { transform: translate(-2px,1px); } 92% { transform: translate(2px,-1px); } 96% { transform: translate(-1px,0); } }
+@keyframes room-collapse { 0% { transform: scaleY(1); opacity: 1; } 35% { transform: scaleY(.85) scaleX(1.03); } 100% { transform: scaleY(.55) scaleX(.96); opacity: .4; } }
+@keyframes ghost-drift { from { transform: translateY(0); } to { transform: translateY(-5px); } }
+@keyframes ghost-rattle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-2deg); } 75% { transform: rotate(2deg); } }
+@keyframes ghost-jump { 50% { transform: translateY(-18px) scale(1.15,.9); } }
+@keyframes ghost-possess { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: .88; } }
+@keyframes bat-cross { 0% { opacity: 0; transform: translate(-180px,20px) scale(.5); } 12% { opacity: 1; } 86% { opacity: .9; } 100% { opacity: 0; transform: translate(720px,-60px) scale(1.2); } }
+@keyframes possessed-label { to { transform: translateX(2px); opacity: .88; } }
+.house-view.is-calm *, .house-view.is-calm *::before, .house-view.is-calm *::after { animation: none !important; transition-duration: var(--dur-fast) !important; }
+.house-view.is-calm .house-bat, .house-view.is-calm .physics-canvas { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .house-marker, .house-room__surface, .house-svg { animation: none !important; transition-duration: var(--dur-fast) !important; }
+  .physics-canvas, .house-bat { display: none !important; }
+}
+@media (max-width: 700px) { .house-effects-controls { position: fixed; top: auto; right: 16px; bottom: 16px; } }
+
 .primary-action, .example-action, .secondary-action, .view-switch button, .shortcut-help { transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out); }
-.primary-action:active, .example-action:active, .secondary-action:active, .view-switch button:active { transform: scale(.97); transition-duration: 90ms; }
+.primary-action:active, .example-action:active, .secondary-action:active, .view-switch button:active { transform: scale(.97); transition-duration: var(--dur-fast); }
 .sound-toggle { min-height: 40px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--soot-800); color: var(--bone-100); cursor: pointer; transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out); }
-.sound-toggle:active { transform: scale(.97); transition-duration: 90ms; }
+.sound-toggle:active { transform: scale(.97); transition-duration: var(--dur-fast); }
 .landing-story { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 130px 0 60px; padding-top: 28px; border-top: 1px solid var(--line); }
 .landing-story .eyebrow, .landing-story > a { grid-column: 1 / -1; }
 .landing-story div { min-height: 130px; padding: 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--soot-900); }

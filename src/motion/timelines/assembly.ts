@@ -16,10 +16,13 @@ export function createAssemblyTimeline(rooms: readonly AssemblyRoom[]): MotionTi
   const delays = assemblyStaggerDelays(ordered.length);
   const timeline = gsap.timeline({ paused: true });
   ordered.forEach((room, index) => {
-    timeline.fromTo(room.selector, { opacity: 0.3 }, {
+    timeline.fromTo(room.selector, { opacity: 0.3, y: -52, scaleX: 0.96, scaleY: 0.82 }, {
       opacity: 1,
+      y: 0,
+      scaleX: 1,
+      scaleY: 1,
       duration: motionTokens.duration.slow / 1000,
-      ease: motionTokens.easing.out,
+      ease: motionTokens.easing.bounce,
     }, delays[index] / 1000);
   });
   const reducedForm = () => gsap.timeline({ paused: true }).to(ordered.map((room) => room.selector), {

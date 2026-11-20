@@ -11,5 +11,6 @@ export function useMotion() {
   const skip = useCallback(() => masterMotionClock.skip(), []);
   const pause = useCallback(() => masterMotionClock.pause(), []);
   const resume = useCallback(() => masterMotionClock.resume(), []);
-  return useMemo(() => ({ reducedMotion, register, skip, pause, resume }), [reducedMotion, register, skip, pause, resume]);
+  const setCalmMode = useCallback((calm: boolean) => masterMotionClock.setCalmMode(calm || reducedMotion), [reducedMotion]);
+  return useMemo(() => ({ reducedMotion, register, skip, pause, resume, setCalmMode }), [reducedMotion, register, skip, pause, resume, setCalmMode]);
 }
