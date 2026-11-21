@@ -182,8 +182,8 @@
 
 .landing-shell { width: min(100% - 48px, 1200px); margin: 0 auto; padding: 28px 0 88px; }
 .landing-nav { display: flex; align-items: center; justify-content: space-between; min-height: 48px; border-bottom: 1px solid var(--line); padding-bottom: 16px; }
-.wordmark { color: var(--bone-100); font: 500 var(--text-20) var(--font-display); letter-spacing: 0.01em; text-decoration: none; }
-.wordmark span { margin-left: 3px; color: var(--oxblood-600); }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; color: var(--bone-100); font: 500 var(--text-20) var(--font-display); letter-spacing: 0.01em; text-decoration: none; }
+.wordmark img { display: block; width: 36px; height: 36px; }
 .nav-link { color: var(--bone-100); font-size: var(--text-14); text-underline-offset: 4px; }
 .landing-hero { max-width: 840px; padding: 96px 0 72px; }
 .landing-hero h1 { max-width: 800px; margin: 16px 0; font: 400 clamp(var(--text-28), 5vw, var(--text-44))/1.15 var(--font-display); }

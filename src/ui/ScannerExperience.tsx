@@ -110,7 +110,10 @@ export default function ScannerExperience() {
   return (
     <main className="landing-shell">
       <header className="landing-nav">
-        <a className="wordmark" href="/" aria-label="Wraith home">Wraith<span aria-hidden="true">/</span></a>
+        <a className="wordmark" href="/" aria-label="Wraith home">
+          <img src="/icon.svg" alt="" width="36" height="36" />
+          <span>Wraith</span>
+        </a>
         <a className="nav-link" href="/house-preview">House preview</a>
         <button className="sound-toggle" type="button" aria-pressed={sound.enabled} onClick={sound.toggle}>Sound {sound.enabled ? 'on' : 'off'}</button>
       </header>
